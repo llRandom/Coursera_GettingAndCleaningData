@@ -1,24 +1,22 @@
 library(dplyr)
 
-originalPath <- "UCI HAR Dataset"
-
 # load train dataset
-xTrain <- read.table(paste0(originalPath, "\\train\\X_train.txt"))
-yTrain <- read.table(paste0(originalPath, "\\train\\y_train.txt"))
-subjectTrain <- read.table(paste0(originalPath, "\\train\\subject_train.txt"))
+xTrain <- read.table("train\\X_train.txt")
+yTrain <- read.table("train\\y_train.txt")
+subjectTrain <- read.table("train\\subject_train.txt")
 train <- cbind(xTrain, yTrain, subjectTrain)
 
 # load test dataset
-xTest <- read.table(paste0(originalPath, "\\test\\X_test.txt"))
-yTest <- read.table(paste0(originalPath, "\\test\\y_test.txt"))
-subjectTest <- read.table(paste0(originalPath, "\\test\\subject_test.txt"))
+xTest <- read.table("test\\X_test.txt")
+yTest <- read.table("test\\y_test.txt")
+subjectTest <- read.table("test\\subject_test.txt")
 test <- cbind(xTest, yTest, subjectTest)
 
 # merge train and test datasets
 dataset <- rbind(train, test)
 
 # assign variable names
-features <- read.table(paste0(originalPath, "\\features.txt"))
+features <- read.table("features.txt")
 colnames(dataset) <- c(as.character(features$V2), "activity", "subject")
 
 # keep only the measurements on the mean and standard deviation. also keep activity and subject
@@ -26,7 +24,7 @@ filteredFeatures <- grep("-(mean|std)\\(\\)-|activity|subject", colnames(dataset
 filteredDataset <- dataset[, filteredFeatures]
 
 # use descriptive activity names to name the activities in the data set
-activityLabels <- read.table(paste0(originalPath, "\\activity_labels.txt"))
+activityLabels <- read.table("activity_labels.txt")
 tidy <- inner_join(filteredDataset, activityLabels, by = c("activity" = "V1")) %>% 
   # set appropriate column name
   mutate(activity = V2) %>% 
